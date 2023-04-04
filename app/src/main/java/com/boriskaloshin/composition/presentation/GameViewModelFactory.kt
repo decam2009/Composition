@@ -9,7 +9,7 @@ class GameViewModelFactory(
     private val level: Level,
     private val application: Application
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
             return GameViewModel(level, application) as T
         } else {
