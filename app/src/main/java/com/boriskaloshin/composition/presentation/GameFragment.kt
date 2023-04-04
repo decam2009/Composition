@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance
 import com.boriskaloshin.composition.R
 import com.boriskaloshin.composition.databinding.FragmentGameBinding
 import com.boriskaloshin.composition.domain.entity.GameResult
@@ -18,13 +17,13 @@ import com.boriskaloshin.composition.domain.entity.Level
 class GameFragment : Fragment() {
 
     private lateinit var level: Level
+    private val viewModelFactory by lazy {
+        GameViewModelFactory(level, requireActivity().application)
+    }
 
     //при первом обращении к данному объекту он будет проинициализирован данным значением
     private val viewModel: GameViewModel by lazy {
-        ViewModelProvider(
-            this,
-            getInstance(requireActivity().application)
-        )[GameViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
     }
 
     private val tvOptions by lazy {
@@ -59,7 +58,6 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         setClickListenerToOption()
-        viewModel.startGame(level)
     }
 
     private fun setClickListenerToOption() {
@@ -115,7 +113,7 @@ class GameFragment : Fragment() {
         }
 
         viewModel.progressAnswers.observe(viewLifecycleOwner) {
-            with (binding){
+            with(binding) {
                 tvAnswersProgress.text = it
             }
         }
